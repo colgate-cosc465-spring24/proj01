@@ -2,6 +2,7 @@
 
 from argparse import ArgumentParser
 import concurrent.futures
+import os
 import signal
 import socket
 import sys
@@ -312,6 +313,8 @@ def main():
             action='store', type=int, default=10, 
             help='''Maximum number of threads to spawn''')
     settings = arg_parser.parse_args()
+
+    print('Proxy PID: %d' % os.getpid())
 
     # Gracefully shut down proxy when ctrl+c is pressed 
     def shutdown(sig, frame):
