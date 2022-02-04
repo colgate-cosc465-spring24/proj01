@@ -15,7 +15,7 @@ class URI:
 
         # Parse URI
         self._absolute = string.startswith('http://')
-        string = string.lstrip('http://')
+        string = string[7:] if self._absolute else string
         abs_path_start = string.find('/')
         if abs_path_start == -1:
             self._host = string
