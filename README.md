@@ -10,13 +10,8 @@ After completing this project, you should be able to:
 * Use the HyperText Transfer Protocol (HTTP) to communicate with a client or server
 * Demonstrate the importance of careful error checking when communicating with third-party network applications
 
-### Clarifications
-* To run your proxy in a Docker container, run (replacing <code><em>PORT</em></code> with a port number from the [range assigned](https://docs.google.com/spreadsheets/d/1KgGDRhtzloTyW50Lh0cLgMVTHFTu_L2G1eDSzjZmesI/edit?usp=sharing) to you): \
-	<code>./docker_proxy.sh <em>PORT</em></code> \
-To run a debugging tool (like netstat or TShark) in your container, use <code>docker_exec.sh</code>. See [Lab 02](https://docs.google.com/document/d/1zTqlAGTmi-DvDnDgAyHrmz-fKFBOxUWGLURJuH2Grfg/edit?usp=sharing) for details on using these tools.
-
 ## Getting Started
-Clone your git repository on the tigers servers department Linux server (`birds.cs.colgate.edu`).
+Clone your git repository on the `tigers` servers.
 
 ### HTTP Proxies
 HTTP is normally used with the client/server model. The client (usually your web browser) communicates directly with the web server. However, in some circumstances it may be useful to introduce an intermediate entity called a proxy. Conceptually, the proxy sits between the client and the server. In the simplest case, instead of sending requests directly to the server the client sends all its requests to the proxy. The proxy then opens a connection to the server, and passes on the client's request. The proxy receives the reply from the server, and then sends that reply back to the client. Notice that the proxy is essentially acting like both an HTTP client (to the remote server) and an HTTP server (to the initial client).
