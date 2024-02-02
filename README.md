@@ -6,12 +6,17 @@ In this project, you will implement a HyperText Transfer Protocol (HTTP) proxy t
 ### Learning objectives
 After completing this project, you should be able to:
 * Use the Berkeley sockets API to send/receive data over multiple sockets
-* Use `netcat`, `netstat`, and `tcpdump` to test and debug a program that uses sockets
 * Use the HyperText Transfer Protocol (HTTP) to communicate with a client or server
 * Demonstrate the importance of careful error checking when communicating with third-party network applications
 
+### Important tips
+* **Thoroughly read the project instructions before you write any code.** Research shows "that the ['new norm' in reading is _skimming_](https://www.theguardian.com/commentisfree/2018/aug/25/skim-reading-new-normal-maryanne-wolf), with word-spotting and browsing through the text. [...] When the reading brain skims like this, [...] we don’t have time to grasp complexity," which makes it harder to create a functional, well-designed program.
+* **Start the project shortly after it is released and work on the project over multiple sessions.** This will give you time to think about how to solve problems, allow you to ask questions, and result in better outcomes. The opportunity to revise your project is contingent upon your git commit history demonstrating that you started the project shortly after it was released and you worked on the project over multiple sessions.
+* **[Thoroughly test](#testing-your-proxy) your proxy**
+
+
 ## Getting Started
-Clone your git repository on the `tigers` servers.
+Clone your git repository on a tigers server.
 
 ### HTTP Proxies
 HTTP is normally used with the client/server model. The client (usually your web browser) communicates directly with the web server. However, in some circumstances it may be useful to introduce an intermediate entity called a proxy. Conceptually, the proxy sits between the client and the server. In the simplest case, instead of sending requests directly to the server the client sends all its requests to the proxy. The proxy then opens a connection to the server, and passes on the client's request. The proxy receives the reply from the server, and then sends that reply back to the client. Notice that the proxy is essentially acting like both an HTTP client (to the remote server) and an HTTP server (to the initial client).
@@ -86,7 +91,7 @@ Your task is to build an HTTP proxy capable of accepting HTTP requests, forwardi
 When your proxy starts, the first thing it will need to do is establish a socket connection that it can use to listen for incoming connections. (See the [Python documentation for the socket module](https://docs.python.org/3.8/library/socket.html).) Your proxy should listen for incoming client connections on all interfaces (i.e., use an empty string for the hostname passed to `bind`) and the port specified from the command line (which is saved in the variable `settings.port`). 
 
 ### Accepting connections
-Each new client connection should be accepted, and a new task should be submitted to a pool of threads to handle this client. (See the [Python documentation for the ThreadPoolExecutor class](https://docs.python.org/3.9/library/concurrent.futures.html#threadpoolexecutor) for an example of how to do this.) The maximum number of concurrent tasks should be limited by the value stored in `settings.max_threads`, which defaults to `10` and can be overridden with the `-t` command line argument.
+Each new client connection should be accepted, and a new task should be submitted to a pool of threads to handle this client. (See the [Python documentation for the ThreadPoolExecutor class](https://docs.python.org/3.8/library/concurrent.futures.html#threadpoolexecutor) for an example of how to do this.) The maximum number of concurrent tasks should be limited by the value stored in `settings.max_threads`, which defaults to `10` and can be overridden with the `-t` command line argument.
 
 ### Receiving the request
 Once a client has connected, the proxy should read data from the client and then check for a properly-formatted HTTP request. Note that the entire HTTP request may not be received at once, so it may be necessary to read from the socket multiple times. You should read until you encounter the blank line that follows the lines of header fields: i.e., check to see if the data read so far contains “`\r\n\r\n`”.
@@ -131,8 +136,6 @@ Your proxy should continue to listen for connections from clients until the user
 
 ### Using netcat
 
-To run a debugging tool (like netstat or TShark) in your container, use <code>docker_exec.sh</code>. See [Lab 02](https://docs.google.com/document/d/1zTqlAGTmi-DvDnDgAyHrmz-fKFBOxUWGLURJuH2Grfg/edit?usp=sharing) for details on using these tools.
-
 Run your proxy in a Docker container using the following command:
 ```
 ./docker_proxy.py PROXY_PORT
@@ -150,12 +153,10 @@ GET http://www.example.com HTTP/1.1
 If your proxy is working correctly, the headers and HTML of example.com should be displayed on your terminal screen. Notice we request the absolute URL (`http://www.example.com`) instead of just the relative URL (`/`). A good sanity check of proxy behavior would be to compare the HTTP response (headers and body) obtained via your proxy with the response from a [direct connection to the remote server](#using-http-with-netcat). Additionally, try requesting a page using netcat concurrently from two different terminal windows.
 
 ### Debugging
-To run a debugging tool (like `netstat` or `TShark`) in your container, use `docker_exec.sh`. See Lab 02 for details on using these tools.
+Use `netcat`, `curl`, and `TShark` to help you debug your code. See Lab 03 for details.
 
 ### Using a web browser
-For a slightly more complex test, you can configure your web browser to use your proxy server as its web proxy.
-
-In Firefox, use a _Manual proxy configuration_ with the hostname set to the hostname of the tigers server on which your proxy is running (`capsian.cs.colgate.edu` or `bengal.cs.colgate.edu`) and the port set to the port you specified on the command line when you started your proxy. Detailed instructions are [here](https://support.mozilla.org/en-US/kb/connection-settings-firefox).
+For a slightly more complex test, you can configure your web browser to use your proxy server as its web proxy. In Firefox, use a _Manual proxy configuration_ with the hostname set to the hostname of the tiger server on which your proxy is running and the port set to the port you specified on the command line when you started your proxy. Detailed instructions are [here](https://support.mozilla.org/en-US/kb/connection-settings-firefox).
 
 ### A Note on Network Programming
 Writing code that will interact with other programs on the Internet is a little different than just writing something for your own use. The general guideline often given for network programs is: **be lenient about what you accept, but strict about what you send**, also known as [Postel's Law](http://en.wikipedia.org/wiki/Robustness_principle). That is, even if a client doesn't do exactly the right thing, you should make a best effort to process their request if it is possible to easily figure out their intent. On the other hand, you should ensure that anything that you send out conforms to the published protocols as closely as possible.
@@ -183,8 +184,6 @@ Some specific scenarios you should test (which I will also test) are:
     See `test_request.py` for an example of how to write unit tests for request transformations.
 
 * Your proxy cleans-up (i.e., closes) connections when they are no longer needed.
-
-    Run `netstat -p -t` to list all active sockets on the machine. You’ll need to look at the PID to determine which sockets are associated with your program, since other groups may be running their proxy at the same time.
 
 ## Submission instructions
 When you are done, you should commit and push your changes to GitHub.
