@@ -185,7 +185,7 @@ class HTTPRequest:
                 'Version: ' + self._version,
                 'Headers:\n' + '\n'.join(['\t' + name + ': ' + value 
                         for name, value in self._headers.items()]),
-                'Body:\n' + self._body
+                'Body:\n' + str(self._body)
                 ])
 
 """Class for parsing and representing a HTTP response"""
@@ -300,7 +300,7 @@ class HTTPResponse:
                 'Reason phrase: ' + self._reason_phrase,
                 'Headers:\n' + '\n'.join(['\t' + name + ': ' + value 
                         for name, value in self._headers.items()]),
-                'Body:\n' + self._body
+                'Body:\n' + str(self._body)
                 ])
 
 """Main method"""
